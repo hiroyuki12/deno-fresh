@@ -4,25 +4,24 @@ import { tw } from "@twind";
 import Counter from "../islands/Counter.tsx";
 import { Handlers, PageProps } from "$fresh/server.ts";
 
-interface User {
-  id: string;
-  avatar_url: string;
-}
-
 export const handler: Handlers<User | null> = {
   async GET(_, ctx) {
-    const resp = await fetch(`https://api.github.com/users/denoland`);
+    //const resp = await fetch(`https://api.github.com/users/denoland`);
+    const resp = await fetch(`https://qiita.com/api/v2/tags/fresh/items`);
     if (resp.status === 404) {
       return ctx.render(null);
     }
-    const user: User = await resp.json();
-    return ctx.render(user);
+
+    //console.log(await resp.json());
+    const user: [User] = await resp.json();
+    console.log(user[0].title);
+    return ctx.render(user[0]);
   },
 };
 
 export default function Home({ data }: PageProps<User | null>) {
   if (!data) {
-    return <h1>User not found</h1>;
+    return <h1>Data not found</h1>;
   }
 
   return (
@@ -38,9 +37,9 @@ export default function Home({ data }: PageProps<User | null>) {
       </p>
       <Counter start={3} />
       <a className="QiitaApp-link" href="https://mbp.hatenablog.com/entry/2022/07/30/095030?_ga=2.78326934.324356107.1659107296-905746074.1658639894" target="_blank" rel="noreferrer">DenoのWebフレームワーク Fresh(deno-fresh)</a><br />
-
-      <img src={data.avatar_url} width={64} height={64} />
-      <p>{data.id}</p>
+      <p>-</p>
+      <p>↓ Qiita APIでFreshタグの1つ目の記事のタイトルを表示</p>
+      <p><a href={data.url}>{data.title}</a></p>
     </div>
   );
 }
