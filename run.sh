@@ -1,1 +1,1 @@
-deno task start   
+deno task start
